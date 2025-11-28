@@ -63,7 +63,7 @@ jobs:
         run: |
           source venv/bin/activate
 
-          export ANDROIDAPI=33
+          export ANDROIDAPI=34
           export ANDROIDNDKAPI=24
           export ANDROID_SDK_ROOT=$HOME/android-sdk
 
@@ -71,7 +71,7 @@ jobs:
             --dist-name=pyjnius_build \
             --bootstrap=sdl2 \
             --arch=${{ matrix.arch }} \
-            --api=33 \
+            --api=34 \
             --ndk-api=24 \
             --copy-libs \
             --requirements=python3,pyjnius \
