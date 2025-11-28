@@ -33,6 +33,28 @@ jobs:
           unzip android-ndk-r25b-linux.zip
           echo "ANDROID_NDK_HOME=$PWD/android-ndk-r25b" >> $GITHUB_ENV
 
+            - name: Install Android SDK + API 33
+              run: |
+                sudo apt-get update
+                sudo apt-get install -y unzip
+      
+                # Download Android commandline tools
+                wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdtools.zip
+                unzip cmdtools.zip -d android-cmdline-tools
+      
+                # Move into correct directory structure
+                sudo mkdir -p /usr/lib/android-sdk/cmdline-tools
+                sudo mv android-cmdline-tools/cmdline-tools /usr/lib/android-sdk/cmdline-tools/latest
+      
+                # Set environment variables
+                echo "ANDROID_SDK_ROOT=/usr/lib/android-sdk" >> $GITHUB_ENV
+                echo "PATH=/usr/lib/android-sdk/cmdline-tools/latest/bin:/usr/lib/android-sdk/platform-tools:$PATH" >> $GITHUB_ENV
+      
+                # Install required Android SDK components
+                yes | sdkmanager --sdk_root=/usr/lib/android-sdk "platforms;android-33"
+                yes | sdkmanager --sdk_root=/usr/lib/android-sdk "platform-tools"
+                yes | sdkmanager --sdk_root=/usr/lib/android-sdk "build-tools;33.0.2"
+
       - name: Build pyjnius for ${{ matrix.arch }}
         run: |
           source venv/bin/activate
