@@ -5,7 +5,6 @@ on:
 
 jobs:
   build:
-    name: Build pyjnius wheels for Android
     runs-on: ubuntu-latest
 
     strategy:
@@ -38,20 +37,24 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y unzip
 
-          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdtools.zip
-
+          # Create SDK directory
           mkdir -p $HOME/android-sdk/cmdline-tools
+
+          # Download commandline tools
+          wget https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdtools.zip
+          
+          # IMPORTANT: Unzip *inside the SDK folder*
           unzip cmdtools.zip -d $HOME/android-sdk/cmdline-tools
 
-          # Move to proper structure
+          # Fix required directory structure
           mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
 
-          # Export paths
+          # Add sdkmanager to PATH
           echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
           echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
           echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
 
-          # Install API 33
+          # Install API 33 properly
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platforms;android-33"
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools"
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "build-tools;33.0.2"
@@ -63,7 +66,6 @@ jobs:
           export ANDROIDAPI=33
           export ANDROIDNDKAPI=24
           export ANDROID_SDK_ROOT=$HOME/android-sdk
-          export ANDROID_NDK_HOME=$ANDROID_NDK_HOME
 
           p4a create \
             --dist-name=pyjnius_build \
