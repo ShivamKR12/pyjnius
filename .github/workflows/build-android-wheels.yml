@@ -59,6 +59,16 @@ jobs:
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools"
           yes | $HOME/android-sdk/cmdline-tools/latest/bin/sdkmanager --sdk_root=$HOME/android-sdk "build-tools;33.0.2"
 
+      - name: Install build dependencies (autotools, libtool, etc)
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            autoconf \
+            automake \
+            libtool \
+            pkg-config \
+            build-essential
+
       - name: Build pyjnius for ${{ matrix.arch }}
         run: |
           source venv/bin/activate
